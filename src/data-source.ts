@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import "dotenv/config";
 import path from "path";
-import { DataSource, DataSourceOptions } from "typeorm";
+import { ConnectionOptions, DataSource } from "typeorm"; // Correção aqui
 
-const dataSourceConfig = (): DataSourceOptions => {
+const dataSourceConfig = (): ConnectionOptions => { // Correção aqui
     const entitiesPath: string = path.join(__dirname, "./entities/**.{ts,js}");
     const migrationPath: string = path.join(__dirname, "./migrations/**.{ts,js}");
 
@@ -17,7 +17,7 @@ const dataSourceConfig = (): DataSourceOptions => {
         type: "postgres",
         url: dbUrl,
         logging: true,
-        entities: [entitiesPath],
+        entities: [entitiesPath], // Correção aqui
         migrations: [migrationPath],
     };
 };
