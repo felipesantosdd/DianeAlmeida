@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IClientRequest, IClientResponse, clientCreatetSchema } from "../interfaces/clients.interfaces";
-import ClientsServices from "../services/clients.services";
+import ClientsServices from "../services/clients.service";
 import { AppError } from "../error/error";
 class ClientControllers {
 
@@ -18,7 +18,6 @@ class ClientControllers {
             const client: IClientRequest = clientCreatetSchema.parse(req.body);
             const newClient = await ClientsServices.create(client);
 
-            console.log(newClient);
             return res.status(201).json(newClient);
         } catch (error) {
             if (error instanceof AppError) {
