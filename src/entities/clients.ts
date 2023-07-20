@@ -1,19 +1,24 @@
+import "reflect-metadata";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("clients")
-export class Product {
+
+@Entity()
+export class Client {
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
-    @Column({ length: 60 })
-    name: string;
+    @Column({ length: 60, type: "varchar" })
+    name!: string;
 
-    @Column({ length: 11, unique: true })
-    cpf: string;
+    @Column({ length: 11, unique: true, type: "varchar" })
+    cpf!: string | null;
 
     @Column({ type: "text", nullable: true })
-    description?: string | undefined | null;
+    rg!: string | null;
 
-    @Column({ type: "integer" })
-    price: number;
+    @Column({ type: "integer", default: 3 })
+    rank!: number;
+
+    @Column({ type: "varchar" })
+    phone!: string;
 }

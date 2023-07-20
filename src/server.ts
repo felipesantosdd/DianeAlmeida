@@ -13,7 +13,7 @@
 // const client = { name: 'Felipe' }
 // print(client)
 
-
+import 'reflect-metadata';
 import app from "./app";
 import { AppDataSource } from "./data-source";
 
