@@ -7,7 +7,7 @@ class ClientsServices {
     static clientRepository = AppDataSource.getRepository(Client);
 
     static async findAll(): Promise<IClientResponse[]> {
-        const clients = await ClientsServices.clientRepository.find();
+        const clients = await this.clientRepository.find();
 
         return clients
     }
@@ -16,7 +16,7 @@ class ClientsServices {
         const cpf = client.cpf;
         const rg = client.rg;
 
-        const existingClient = await ClientsServices.clientRepository.findOne({
+        const existingClient = await this.clientRepository.findOne({
             where: [{ cpf }, { rg }],
         });
 
@@ -24,8 +24,8 @@ class ClientsServices {
             throw new AppError("Já existe um cliente com esses dados.", 409);
         }
 
-        const newClient = ClientsServices.clientRepository.create(client);
-        await ClientsServices.clientRepository.save(newClient);
+        const newClient = this.clientRepository.create(client);
+        await this.clientRepository.save(newClient);
 
         return newClient;
     }

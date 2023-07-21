@@ -6,6 +6,13 @@ import { IContractRequest, IContractResponse } from "../interfaces/contracts.int
 class ContractsService {
     static contractRepository = AppDataSource.getRepository(Contract)
 
+    static async findAll(): Promise<IContractResponse[]> {
+        const contracts: IContractResponse[] = await this.contractRepository.find()
+
+        return contracts
+    }
+
+
     static async create(contract: IContractRequest): Promise<IContractResponse> {
         const number = contract.number
 

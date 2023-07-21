@@ -6,6 +6,16 @@ import { AppError } from "../error/error";
 
 class ContractController {
 
+    static async getAll(req: Request, res: Response): Promise<IContractResponse[]> {
+        try {
+            const contracts: IContractRequest[] = await ContractsService.findAll()
+
+            return res.status(200).json(contracts)
+        } catch (error) {
+
+        }
+    }
+
     static async create(req: Request, res: Response): Promise<IContractResponse> {
         try {
             const contract: IContractRequest = contractCreateSchema.parse(req.body)
