@@ -1,22 +1,21 @@
 import { Request, Response } from "express";
 import { IContractRequest, IContractResponse, contractCreateSchema } from "../interfaces/contracts.interfaces";
-import { IClientRequest, clientCreatetSchema } from "../interfaces/clients.interfaces";
 import ContractsService from "../services/contracts.service";
 import { AppError } from "../error/error";
 
 class ContractController {
 
-    static async getAll(req: Request, res: Response): Promise<IContractResponse[]> {
+    static async getAll(req: Request, res: Response): Promise<IContractResponse[] | any> {
         try {
             const contracts: IContractRequest[] = await ContractsService.findAll()
 
             return res.status(200).json(contracts)
         } catch (error) {
-
+            return res.status(400).json({ error: error.message })
         }
     }
 
-    static async create(req: Request, res: Response): Promise<IContractResponse> {
+    static async create(req: Request, res: Response): Promise<IContractResponse | any> {
         try {
             const contract: IContractRequest = contractCreateSchema.parse(req.body)
 

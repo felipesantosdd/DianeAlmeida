@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Client } from "./clients";
+import { Product } from "./products";
 
 @Entity()
 export class Contract {
@@ -26,4 +27,7 @@ export class Contract {
 
     @ManyToOne(() => Client, (client) => client.contracts, { nullable: false })
     client: Client;
+
+    @ManyToOne(() => Product, (product) => product.contracts)
+    products: Product[];
 }

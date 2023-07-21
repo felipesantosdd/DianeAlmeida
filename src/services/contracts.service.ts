@@ -9,7 +9,7 @@ class ContractsService {
     static clientRepository = AppDataSource.getRepository(Client);
 
     static async findAll(): Promise<IContractResponse[] | any> {
-        const contracts: IContractResponse[] = await this.contractRepository.find({
+        const contracts = await this.contractRepository.find({
             relations: ['client'],
         });
 
