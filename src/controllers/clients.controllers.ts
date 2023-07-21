@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IClientRequest, IClientResponse, clientCreatetSchema } from "../interfaces/clients.interfaces";
+import { IClientRequest, IClientResponse, clientCreateSchema } from "../interfaces/clients.interfaces";
 import ClientsServices from "../services/clients.service";
 import { AppError } from "../error/error";
 class ClientControllers {
 
-    static async getAll(req: Request, res: Response): Promise<IClientResponse[]> {
+    static async getAll(req: Request, res: Response): Promise<IClientResponse[] | any> {
         try {
             const clients: IClientResponse[] = await ClientsServices.findAll()
             return res.status(200).json(clients)
@@ -15,7 +15,7 @@ class ClientControllers {
 
     static async create(req: Request, res: Response): Promise<any> {
         try {
-            const client: IClientRequest = clientCreatetSchema.parse(req.body);
+            const client: IClientRequest = clientCreateSchema.parse(req.body);
             const newClient = await ClientsServices.create(client);
 
             return res.status(201).json(newClient);

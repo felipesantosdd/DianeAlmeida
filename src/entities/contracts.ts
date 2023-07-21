@@ -1,19 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Client } from "./clients";
 
 @Entity()
 export class Contract {
-
     @PrimaryGeneratedColumn('uuid')
-    id: string
+    id: string;
 
     @Column('int')
     number: number;
 
-    @Column('varchar')
-    retirada: Timestamp;
+    @Column('timestamp')
+    retirada: Date;
 
-    @Column('varchar')
-    devolucao: Timestamp;
+    @Column('timestamp')
+    devolucao: Date;
 
     @Column('varchar')
     observacao: string;
@@ -23,4 +23,7 @@ export class Contract {
 
     @Column('varchar')
     status: string;
+
+    @ManyToOne(() => Client, (client) => client.contracts, { nullable: false })
+    client: Client;
 }

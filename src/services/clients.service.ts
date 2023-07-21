@@ -1,27 +1,29 @@
 import { AppDataSource } from "../data-source";
 import { Client } from "../entities/clients";
+import { Address } from "../entities/address"; // Importe a entidade Address
 import { AppError } from "../error/error";
 import { IClientRequest, IClientResponse } from "../interfaces/clients.interfaces";
 
 class ClientsServices {
     static clientRepository = AppDataSource.getRepository(Client);
 
-    static async findAll(): Promise<IClientResponse[]> {
-        const clients = await this.clientRepository.find();
+    static async findAll(): Promise<IClientResponse[] | any> {
+        const clients = await this.clientRepository.find({
+            relations: ['contracts', 'address'], // Inclua a relação 'address'
+        });
 
-        return clients
+        return clients;
     }
 
-    static async create(client: IClientRequest): Promise<IClientResponse> {
+    static async create(client: IClientRequest): Promise<IClientResponse | any> {
         const cpf = client.cpf;
-        const rg = client.rg;
 
         const existingClient = await this.clientRepository.findOne({
-            where: [{ cpf }, { rg }],
+            where: { cpf },
         });
 
         if (existingClient) {
-            throw new AppError("Já existe um cliente com esses dados.", 409);
+            throw new AppError("Já existe um cliente com esse CPF.", 409);
         }
 
         const newClient = this.clientRepository.create(client);

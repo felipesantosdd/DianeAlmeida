@@ -6,7 +6,10 @@ export const contractCreateSchema = z.object({
     devolucao: z.string().nonempty(),
     observacao: z.string().nullable(),
     tipo: z.string(),
-    status: z.string()
+    status: z.string(),
+    client: z.object({
+        id: z.string(),
+    }),
 })
 
 export const contractResponseSchema = z.object({
@@ -17,6 +20,9 @@ export const contractResponseSchema = z.object({
     observacao: z.string().nullable(),
     tipo: z.string(),
     status: z.string(),
+    client: z.object({
+        id: z.string(),
+    }),
 })
 
 

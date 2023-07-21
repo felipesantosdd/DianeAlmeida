@@ -28,7 +28,7 @@ class ContractController {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({ error: error.message });
             } else {
-                return res.status(400).json({ error: "Erro desconhecido ao criar Contrato." });
+                return res.status(400).json({ error: error });
             }
         }
 
