@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Client } from "./clients";
 import { Product } from "./products";
 
@@ -25,9 +25,14 @@ export class Contract {
     @Column('varchar')
     status: string;
 
+    @Column('numeric')
+    total: number;
+
     @ManyToOne(() => Client, (client) => client.contracts, { nullable: false })
     client: Client;
 
-    @ManyToOne(() => Product, (product) => product.contracts)
+    @ManyToMany(() => Product, (product) => product.contracts)
+    @JoinTable()
     products: Product[];
+
 }

@@ -33,6 +33,58 @@ class ProductsServices {
 
     }
 
+    static async updatePopularity(productID: string): Promise<void> {
+
+        console.log(`productID: ${productID}`)
+
+        const product = await this.ProductRepository.findOne({
+            where: { id: productID }, relations: ['contracts']
+        })
+
+        product.popularity = product.contracts.length
+
+        this.ProductRepository.save(product)
+
+        return
+    }
+
+    static async updateUnique(productID: string, update: any): Promise<IProductResponse | any> {
+        const product = await this.ProductRepository.findOne({
+            where: { id: productID }
+        })
+
+        if (!product) {
+            throw new AppError('Produto Não Encontrado', 404)
+        }
+
+        product.price = update
+        await this.ProductRepository.save(product)
+
+        return product
+    }
+
+
+    static async findUnique(id: string): Promise<IProductResponse | any> {
+
+        const product = await this.ProductRepository.findOne({
+            where: { id }, relations: ['contracts']
+        })
+
+        if (!product) {
+            throw new AppError("Produto não encontrado", 404)
+        }
+
+        return product
+    }
+
+    static async deleteUnique(id: string): Promise<void> {
+        await this.ProductRepository.delete(id)
+
+        return
+    }
+
+
+
 }
 
 export default ProductsServices;

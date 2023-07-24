@@ -32,6 +32,53 @@ class ProductsControllers {
         }
     }
 
+    static async findUnique(req: Request, res: Response): Promise<IProductResponse | any> {
+        const id: string = req.params.id
+        try {
+            const product = await ProductsServices.findUnique(id)
+            return res.status(200).json(product)
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({ error: error.message })
+            } else {
+                return res.status(400).json({ error: error.message })
+            }
+        }
+    }
+
+    static async updateUnique(req: Request, res: Response): Promise<IProductResponse | any> {
+        const id: string = req.params.id
+        const newValue: number = req.body.price
+        try {
+            const product: IProductRequest = await ProductsServices.updateUnique(id, newValue)
+
+            return res.status(200).json(product)
+
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({ error: error.message })
+            } else {
+                return res.status(400).json({ error: error.message })
+            }
+        }
+    }
+
+    static async deleteUnique(req: Request, res: Response): Promise<void | any> {
+
+        const id: string = req.params.id
+
+        try {
+            await ProductsServices.deleteUnique(id)
+            return res.status(200).send()
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({ error: error.message })
+            } else {
+                return res.status(400).json({ error: error.message })
+            }
+        }
+    }
+
 
 }
 

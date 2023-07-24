@@ -27,6 +27,12 @@ export class Product {
     @Column({ type: 'numeric' })
     totalValue: number;
 
-    @ManyToMany(() => Contract, contract => contract.products)
+    @Column({ type: 'numeric', default: 0 })
+    popularity: number
+
+    @ManyToMany(() => Contract, (contract) => contract.products)
     contracts: Contract[];
+
+
+
 }
