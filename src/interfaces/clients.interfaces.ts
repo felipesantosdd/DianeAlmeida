@@ -5,6 +5,7 @@ export const clientCreateSchema = z.object({
     cpf: z.string().max(11),
     phone: z.string().min(8, { message: 'O contato do cliente é obrigatorio' })
 });
+
 export const clientResponseSchema = z.object({
     id: z.union([z.number(), z.null()]),
     name: z.string(),
@@ -13,5 +14,11 @@ export const clientResponseSchema = z.object({
     phone: z.string()
 });
 
+export const clientUpdateSchema = z.object({
+    rank: z.string().nullable(),
+    phone: z.string().nullable()
+});
+
 export type IClientRequest = z.infer<typeof clientCreateSchema>
 export type IClientResponse = z.infer<typeof clientResponseSchema>
+export type IClientUpdate = z.infer<typeof clientUpdateSchema>
