@@ -3,7 +3,7 @@ import { Client } from "../entities/clients";
 import { Contract } from "../entities/contracts";
 import { Product } from "../entities/products";
 import { AppError } from "../error/error";
-import { IContractRequest, IContractResponse } from "../interfaces/contracts.interfaces";
+import { IContractRequest, IContractResponse, IContractUpdate } from "../interfaces/contracts.interfaces";
 import ProductsServices from "./products.service";
 
 class ContractsService {
@@ -13,12 +13,23 @@ class ContractsService {
 
     static async findAll(): Promise<IContractResponse[] | any> {
         const contracts = await this.contractRepository.find({
-            relations: ['client', 'products'],
+            order: { number: 'DESC' }
         });
 
-        const clients = await this.clientRepository.find();
-
         return contracts;
+    }
+
+    static async findUnique(id: string): Promise<IContractResponse | any> {
+        const contract = await this.contractRepository.findOne({
+            where: { id }, relations: ['client', 'products'],
+        });
+
+
+        if (!contract) {
+            throw new AppError('Este contrato não existe', 404)
+        }
+
+        return contract;
     }
 
     static async create(contract: IContractRequest): Promise<IContractResponse | any> {
@@ -57,6 +68,66 @@ class ContractsService {
         } catch (error) {
             throw new AppError(error.message, 500);
         }
+    }
+
+    static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
+        const contract = await this.contractRepository.findOne({
+            where: { id }, relations: ['client', 'products'],
+        });
+
+        if (!contract) {
+            throw new AppError('Este contrato não existe', 404);
+        }
+
+        contract.retirada = update.retirada != "" ? new Date(update.retirada) : contract.retirada
+        contract.devolucao = update.devolucao != "" ? new Date(update.devolucao) : contract.devolucao
+        contract.observacao = update.observacao || contract.observacao
+        contract.tipo = update.tipo || contract.tipo
+        contract.status = update.status || contract.status
+
+        if (update.products && update.products.length > 0) {
+            // Obter os produtos existentes do contrato
+            const existingProducts = contract.products || [];
+
+            existingProducts.map(product => ProductsServices.updatePopularity(product.id))
+
+            // Obter os detalhes dos produtos novos com base nos IDs fornecidos
+            const newProducts = await this.ProductRepository.findByIds(update.products);
+
+            // Atualizar a lista de produtos do contrato combinando os produtos existentes e novos
+            contract.products = [...existingProducts, ...newProducts];
+
+            // Calcular o valor total com base nos preços dos produtos atualizados
+            const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+            contract.total = total;
+        }
+
+        try {
+            await this.contractRepository.save(contract);
+            return contract;
+        } catch (error) {
+            throw new AppError(error.message, 500);
+        }
+
+
+
+    }
+
+
+
+
+    static async deleteUnique(id: string): Promise<void> {
+        const contract = await this.contractRepository.findOne({
+            where: { id }
+        })
+
+        if (!contract) {
+            throw new AppError('Este contrato não existe', 404)
+        }
+
+        await this.contractRepository.delete(contract)
+
+        return
     }
 }
 

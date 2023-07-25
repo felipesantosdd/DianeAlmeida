@@ -1,3 +1,4 @@
+import { date } from "zod";
 import { AppDataSource } from "../data-source";
 import { Product } from "../entities/products";
 import { AppError } from "../error/error";
@@ -10,7 +11,11 @@ class ProductsServices {
     static async findAll(): Promise<IProductResponse[] | any> {
         const products = await this.ProductRepository.find()
 
-        return products
+        products.map(product => this.updatePopularity(product.id))
+
+        const response = await this.ProductRepository.find({ order: { popularity: 'DESC' } })
+
+        return response
 
     }
 

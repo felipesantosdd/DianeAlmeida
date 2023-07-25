@@ -38,6 +38,20 @@ export const contractResponseSchema = z.object({
     ),
 })
 
+export const contractUpdateSchema = z.object({
+    retirada: z.string(),
+    devolucao: z.string(),
+    observacao: z.string(),
+    tipo: z.string(),
+    status: z.string(),
+    products: z.array(
+        z.object({
+            id: z.string()
+        })
+    ),
+})
+
 
 export type IContractRequest = z.infer<typeof contractCreateSchema>
 export type IContractResponse = z.infer<typeof contractResponseSchema>
+export type IContractUpdate = z.infer<typeof contractUpdateSchema>

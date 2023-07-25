@@ -8,7 +8,9 @@ class ClientsServices {
     static clientRepository = AppDataSource.getRepository(Client);
 
     static async findAll(): Promise<IClientResponse[] | any> {
-        const clients = await this.clientRepository.find();
+        const clients = await this.clientRepository.find({
+            order: { id: 'DESC' }
+        });
 
         return clients;
     }
