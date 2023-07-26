@@ -3,9 +3,12 @@ import clientsRoutes from "./routes/clients.routes";
 import contractRoutes from "./routes/contracts.routes";
 import addressRoutes from "./routes/address.routes";
 import productsRoutes from "./routes/products.routes";
+import cors from 'cors';
 
 const app: Application = express();
 app.use(express.json());
+
+app.use(cors())
 
 app.use('/clients', clientsRoutes)
 app.use('/contracts', contractRoutes)

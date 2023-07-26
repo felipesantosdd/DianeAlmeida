@@ -20,6 +20,10 @@ export class Client {
     @Column({ type: "varchar" })
     phone: string;
 
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    createdAt: Date;
+
+
     @OneToMany(() => Contract, (contract => contract.client), { cascade: true })
     contracts: Contract[];
 

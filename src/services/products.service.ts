@@ -9,7 +9,9 @@ class ProductsServices {
     static ProductRepository = AppDataSource.getRepository(Product)
 
     static async findAll(): Promise<IProductResponse[] | any> {
-        const products = await this.ProductRepository.find()
+        const products = await this.ProductRepository.find({
+            order: { createdAt: 'DESC' }
+        })
 
         products.map(product => this.updatePopularity(product.id))
 

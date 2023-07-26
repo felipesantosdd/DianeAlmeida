@@ -27,6 +27,10 @@ export class Product {
     @Column({ type: 'numeric' })
     totalValue: number;
 
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    createdAt: Date;
+
+
     @Column({ type: 'numeric', default: 0 })
     popularity: number
 

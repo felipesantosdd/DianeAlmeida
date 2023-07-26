@@ -28,6 +28,9 @@ export class Contract {
     @Column('numeric')
     total: number;
 
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    createdAt: Date;
+
     @ManyToOne(() => Client, (client) => client.contracts, { nullable: false })
     client: Client;
 

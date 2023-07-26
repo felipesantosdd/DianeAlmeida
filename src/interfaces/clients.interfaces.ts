@@ -11,12 +11,13 @@ export const clientResponseSchema = z.object({
     name: z.string(),
     cpf: z.string().max(11),
     rank: z.number().default(3),
-    phone: z.string()
+    phone: z.string(),
+    createdAt: z.string()
 });
 
 export const clientUpdateSchema = z.object({
     rank: z.string().nullable(),
-    phone: z.string().nullable()
+    phone: z.string().nullable(),
 });
 
 export type IClientRequest = z.infer<typeof clientCreateSchema>

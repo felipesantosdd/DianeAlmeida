@@ -9,7 +9,7 @@ class ClientsServices {
 
     static async findAll(): Promise<IClientResponse[] | any> {
         const clients = await this.clientRepository.find({
-            order: { id: 'DESC' }
+            order: { createdAt: 'DESC' }, relations: ['contracts']
         });
 
         return clients;

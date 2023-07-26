@@ -13,7 +13,7 @@ class ContractsService {
 
     static async findAll(): Promise<IContractResponse[] | any> {
         const contracts = await this.contractRepository.find({
-            order: { number: 'DESC' }
+            order: { createdAt: 'DESC' }
         });
 
         return contracts;
