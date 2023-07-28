@@ -16,6 +16,7 @@ class AddressService {
     }
 
     static async updateUnique(id: string, data: IAddressUpdate): Promise<IAddresResponse | any> {
+
         const address = await this.addressRepository.findOne({
             where: { id }
         })
@@ -39,6 +40,10 @@ class AddressService {
     }
 
     static async create(address: IAddressRequest): Promise<IAddresResponse | any> {
+
+        function removeNonNumericCharacters(str) {
+            return str.replace(/\D/g, '');
+        }
 
         // Crie uma nova instância de endereço com os dados fornecidos
         const newAddress = this.addressRepository.create(address);

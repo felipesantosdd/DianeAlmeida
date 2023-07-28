@@ -2,14 +2,14 @@ import { z } from "zod";
 
 export const clientCreateSchema = z.object({
     name: z.string().max(60, { message: 'O nome do cliente é obrigatorio' }),
-    cpf: z.string().max(11),
+    cpf: z.string(),
     phone: z.string().min(8, { message: 'O contato do cliente é obrigatorio' })
 });
 
 export const clientResponseSchema = z.object({
     id: z.union([z.number(), z.null()]),
     name: z.string(),
-    cpf: z.string().max(11),
+    cpf: z.string(),
     rank: z.number().default(3),
     phone: z.string(),
     createdAt: z.string()

@@ -37,6 +37,4 @@ export class Product {
     @ManyToMany(() => Contract, (contract) => contract.products)
     contracts: Contract[];
 
-
-
 }

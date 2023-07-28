@@ -58,6 +58,13 @@ class ClientsServices {
             throw new AppError("Já existe um cliente com esse CPF.", 409);
         }
 
+
+        function removeNonNumericCharacters(str) {
+            return str.replace(/\D/g, '');
+        }
+
+        client.cpf = removeNonNumericCharacters(client.cpf);
+
         const newClient = this.clientRepository.create(client);
         await this.clientRepository.save(newClient);
 
