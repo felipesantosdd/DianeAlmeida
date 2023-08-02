@@ -19,18 +19,19 @@ class ContractsService {
         return contracts;
     }
 
-    static async findUnique(id: string): Promise<IContractResponse | any> {
+    static async findUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
         const contract = await this.contractRepository.findOne({
             where: { id }, relations: ['client', 'products'],
-        });
-
+        })
 
         if (!contract) {
             throw new AppError('Este contrato não existe', 404)
         }
 
-        return contract;
+        return contract
+
     }
+
 
     static async create(contract: IContractRequest): Promise<IContractResponse | any> {
         const contractNumber = contract.number;
@@ -56,7 +57,13 @@ class ContractsService {
 
             // Calcular o valor total com base nos preços dos produtos
             const total = products.reduce((acc, product) => acc + Number(product.price), 0);
-            newContract.total = total;
+
+            const descont = total - (total * 0.05)
+            newContract.total = contract.pagamento <= 2 ? descont : total;
+
+            console.log('total:', total)
+            console.log('total - 5%:', total - (total * 0.05))
+            console.log('pagamento:', contract.pagamento)
         } else {
             // Se não houver produtos associados, o total será 0
             newContract.total = 0;
@@ -71,6 +78,8 @@ class ContractsService {
     }
 
     static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
+
+
         const contract = await this.contractRepository.findOne({
             where: { id }, relations: ['client', 'products'],
         });
@@ -83,7 +92,9 @@ class ContractsService {
         contract.devolucao = update.devolucao != "" ? new Date(update.devolucao) : contract.devolucao
         contract.observacao = update.observacao || contract.observacao
         contract.tipo = update.tipo || contract.tipo
-        contract.status = update.status || contract.status
+        contract.status = update.status || contract.status,
+            contract.pagamento = update.pagamento || contract.pagamento
+
 
         if (update.products && update.products.length > 0) {
             // Obter os produtos existentes do contrato
@@ -98,9 +109,14 @@ class ContractsService {
             contract.products = [...existingProducts, ...newProducts];
 
             // Calcular o valor total com base nos preços dos produtos atualizados
-            const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
-            contract.total = total;
+
         }
+
+        const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+
+        const descont = total - (total * 0.05)
+
+        contract.total = contract.pagamento <= 2 ? descont : total;
 
         try {
             await this.contractRepository.save(contract);
@@ -112,9 +128,6 @@ class ContractsService {
 
 
     }
-
-
-
 
     static async deleteUnique(id: string): Promise<void> {
         const contract = await this.contractRepository.findOne({

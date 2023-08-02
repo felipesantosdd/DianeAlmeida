@@ -7,6 +7,7 @@ export const contractCreateSchema = z.object({
     observacao: z.string().nullable(),
     tipo: z.string(),
     status: z.string(),
+    pagamento: z.number(),
     client: z.object({
         id: z.string(),
     }), products: z.array(
@@ -25,7 +26,7 @@ export const contractResponseSchema = z.object({
     tipo: z.string(),
     status: z.string(),
     value: z.number(),
-    popularity: z.number(),
+    pagamento: z.number(),
     client: z.object({
         id: z.string(),
     }),
@@ -44,6 +45,7 @@ export const contractUpdateSchema = z.object({
     observacao: z.string(),
     tipo: z.string(),
     status: z.string(),
+    pagamento: z.number(),
     products: z.array(
         z.object({
             id: z.string()
