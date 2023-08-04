@@ -64,6 +64,22 @@ class ContractController {
         }
     }
 
+    static async removeProduct(req: Request, res: Response): Promise<IContractResponse | any> {
+        const id: string = req.params.id
+        const update: IContractUpdate = req.body
+        try {
+            const contract = await ContractsService.deleteProduct(id, update)
+
+            return res.status(200).json(contract)
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({ error: error.message });
+            } else {
+                return res.status(400).json({ error: error });
+            }
+        }
+    }
+
     static async deleteUnique(req: Request, res: Response): Promise<void | any> {
         const id: string = req.params.id
 

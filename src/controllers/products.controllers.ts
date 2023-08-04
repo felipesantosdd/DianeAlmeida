@@ -63,6 +63,8 @@ class ProductsControllers {
         }
     }
 
+
+
     static async deleteUnique(req: Request, res: Response): Promise<void | any> {
 
         const id: string = req.params.id

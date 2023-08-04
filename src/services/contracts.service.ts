@@ -19,7 +19,7 @@ class ContractsService {
         return contracts;
     }
 
-    static async findUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
+    static async findUnique(id: string): Promise<IContractResponse | any> {
         const contract = await this.contractRepository.findOne({
             where: { id }, relations: ['client', 'products'],
         })
@@ -129,6 +129,39 @@ class ContractsService {
 
     }
 
+    static async deleteProduct(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
+        const contract = await this.contractRepository.findOne({
+            where: { id },
+            relations: ['client', 'products'],
+        });
+
+        if (!contract) {
+            throw new AppError('Este contrato não existe', 404);
+        }
+
+        console.log('o produto a ser removido', update.products)
+
+        // Verifica se existe um produto a ser removido
+        if (update.products && update.products.length > 0) {
+            const removedProductId = update.products[0].id;
+
+            // Remove o produto correspondente da lista de produtos existentes do contrato
+            contract.products = contract.products.filter(product => product.id !== removedProductId);
+
+            // Recalcula o valor total do contrato com base nos produtos restantes
+            const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+            const desconto = total - (total * 0.05);
+            contract.total = contract.pagamento <= 2 ? desconto : total;
+        }
+
+        try {
+            await this.contractRepository.save(contract);
+            return contract;
+        } catch (error) {
+            throw new AppError(error.message, 500);
+        }
+    }
+
     static async deleteUnique(id: string): Promise<void> {
         const contract = await this.contractRepository.findOne({
             where: { id }
@@ -142,6 +175,7 @@ class ContractsService {
 
         return
     }
+
 }
 
 export default ContractsService;

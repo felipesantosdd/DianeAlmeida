@@ -9,6 +9,8 @@ contractRoutes.get('/:id', ContractController.findUnique)
 
 contractRoutes.patch('/:id', ContractController.updateUnique)
 
+contractRoutes.patch('/remove/:id', ContractController.removeProduct)
+
 contractRoutes.post('/', ContractController.create)
 
 contractRoutes.delete('/:id', ContractController.deleteUnique)
