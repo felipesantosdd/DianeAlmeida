@@ -163,18 +163,23 @@ class ContractsService {
     }
 
     static async deleteUnique(id: string): Promise<void> {
-        const contract = await this.contractRepository.findOne({
-            where: { id }
-        })
+        try {
+            const contract = await this.contractRepository.findOne({
+                where: { id }
+            });
 
-        if (!contract) {
-            throw new AppError('Este contrato não existe', 404)
+            if (!contract) {
+                throw new AppError('Este contrato não existe', 404);
+            }
+
+            await this.contractRepository.remove(contract);
+
+        } catch (error) {
+            console.error('Erro ao excluir contrato:', error);
+            throw new AppError('Erro ao excluir contrato', 500);
         }
-
-        await this.contractRepository.delete(contract)
-
-        return
     }
+
 
 }
 
