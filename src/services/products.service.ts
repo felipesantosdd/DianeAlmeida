@@ -85,6 +85,9 @@ class ProductsServices {
     }
 
     static async deleteUnique(id: string): Promise<void> {
+
+        
+
         await this.ProductRepository.delete(id)
 
         return

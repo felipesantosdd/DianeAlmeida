@@ -31,6 +31,9 @@ export class Contract {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    fechado: Date;
+
     @Column('numeric')
     pagamento: number;
 

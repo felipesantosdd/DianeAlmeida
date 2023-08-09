@@ -42,6 +42,7 @@ export const contractResponseSchema = z.object({
 export const contractUpdateSchema = z.object({
     retirada: z.string(),
     devolucao: z.string(),
+    fechado: z.string(),
     observacao: z.string(),
     tipo: z.string(),
     status: z.string(),
