@@ -59,11 +59,8 @@ class ContractsService {
             const total = products.reduce((acc, product) => acc + Number(product.price), 0);
 
             const descont = total - (total * 0.05)
-            newContract.total = contract.pagamento <= 2 ? descont : total;
+            newContract.total = contract.pagamento === 1 ? descont : total;
 
-            console.log('total:', total)
-            console.log('total - 5%:', total - (total * 0.05))
-            console.log('pagamento:', contract.pagamento)
         } else {
             // Se não houver produtos associados, o total será 0
             newContract.total = 0;
@@ -116,7 +113,7 @@ class ContractsService {
 
         const descont = total - (total * 0.05)
 
-        contract.total = contract.pagamento <= 2 ? descont : total;
+        contract.total = contract.pagamento == 1 ? descont : total;
 
         try {
             await this.contractRepository.save(contract);

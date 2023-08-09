@@ -55,16 +55,22 @@ class ProductsServices {
         return
     }
 
-    static async updateUnique(productID: string, update: any): Promise<IProductResponse | any> {
+    static async updateUnique(productID: string, update: IProductRequest): Promise<IProductResponse | any> {
         const product = await this.ProductRepository.findOne({
             where: { id: productID }
         })
+
+        console.log(update)
 
         if (!product) {
             throw new AppError('Produto Não Encontrado', 404)
         }
 
-        product.price = update
+        product.price = update.price || product.price
+        product.description = update.description || product.description
+        product.modelo = update.modelo || product.modelo
+        product.totalValue = update.price * 3 || product.totalValue
+
         await this.ProductRepository.save(product)
 
         return product
@@ -86,7 +92,7 @@ class ProductsServices {
 
     static async deleteUnique(id: string): Promise<void> {
 
-        
+
 
         await this.ProductRepository.delete(id)
 

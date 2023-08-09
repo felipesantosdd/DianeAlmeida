@@ -48,9 +48,9 @@ class ProductsControllers {
 
     static async updateUnique(req: Request, res: Response): Promise<IProductResponse | any> {
         const id: string = req.params.id
-        const newValue: number = req.body.price
+        const data: IProductRequest = req.body
         try {
-            const product: IProductRequest = await ProductsServices.updateUnique(id, newValue)
+            const product: IProductRequest = await ProductsServices.updateUnique(id, data)
 
             return res.status(200).json(product)
 
