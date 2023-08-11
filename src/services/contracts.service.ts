@@ -114,15 +114,15 @@ class ContractsService {
 
         }
 
-        const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+        const Newtotal = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
 
+        const total = Newtotal + Number(contract.extra)
 
 
         const descont = total - (total * 0.05)
 
         contract.total = contract.pagamento == 1 ? descont : total;
 
-        contract.total += Number(contract.extra)
         try {
             await this.contractRepository.save(contract);
             return contract;

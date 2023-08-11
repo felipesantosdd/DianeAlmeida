@@ -13,7 +13,7 @@ export class Contract {
     @Column('timestamp')
     retirada: Date;
 
-    @Column('timestamp')
+    @Column('timestamp', { nullable: true })
     devolucao: Date;
 
     @Column('varchar')

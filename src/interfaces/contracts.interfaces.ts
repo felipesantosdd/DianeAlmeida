@@ -3,13 +3,12 @@ import { z } from "zod";
 export const contractCreateSchema = z.object({
     number: z.number(),
     retirada: z.string().nonempty(),
-    devolucao: z.string().nonempty(),
+    devolucao: z.string(),
     observacao: z.string().nullable(),
-    tipo: z.string(),
+    tipo: z.string().nullable(),
     fechado: z.string(),
     status: z.string(),
     pagamento: z.number(),
-    extra: z.number(),
     client: z.object({
         id: z.string(),
     }), products: z.array(
@@ -23,7 +22,7 @@ export const contractResponseSchema = z.object({
     id: z.string().uuid(),
     number: z.number().min(1, { message: 'O numero do contrato é Obrigatorio' }),
     retirada: z.string().nonempty(),
-    devolucao: z.string().nonempty(),
+    devolucao: z.string(),
     observacao: z.string().nullable(),
     tipo: z.string(),
     fechado: z.string(),
