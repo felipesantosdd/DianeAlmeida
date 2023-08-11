@@ -10,18 +10,18 @@ class ProductsServices {
 
     static async findAll(): Promise<IProductResponse[] | any> {
         const products = await this.ProductRepository.find({
-            order: { createdAt: 'DESC' }
+            order: { createdAt: 'ASC' }
         })
 
         products.map(product => this.updatePopularity(product.id))
 
-        const response = await this.ProductRepository.find({ order: { popularity: 'DESC' } })
+        const response = await this.ProductRepository.find({ order: { code: 'DESC' } })
 
         return response
 
     }
 
-    static async create(product: IProductRequest): Promise<IProductResponse | any> {
+    static async create(product: IProductRequest | any): Promise<IProductResponse | any> {
 
         const code = product.code
 

@@ -13,7 +13,7 @@ class ContractsService {
 
     static async findAll(): Promise<IContractResponse[] | any> {
         const contracts = await this.contractRepository.find({
-            order: { createdAt: 'DESC' }
+            order: { fechado: 'DESC' }
         });
 
         return contracts;
@@ -32,7 +32,6 @@ class ContractsService {
 
     }
 
-
     static async create(contract: IContractRequest): Promise<IContractResponse | any> {
         const contractNumber = contract.number;
 
@@ -45,6 +44,8 @@ class ContractsService {
         }
 
         const newContract = this.contractRepository.create(contract);
+
+        newContract.total += contract.extra
 
         newContract.products.forEach(async (product) => {
             ProductsServices.updatePopularity(product.id)
@@ -76,6 +77,8 @@ class ContractsService {
 
     static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
 
+        console.log(update)
+
 
         const contract = await this.contractRepository.findOne({
             where: { id }, relations: ['client', 'products'],
@@ -89,8 +92,10 @@ class ContractsService {
         contract.devolucao = update.devolucao != "" ? new Date(update.devolucao) : contract.devolucao
         contract.observacao = update.observacao || contract.observacao
         contract.tipo = update.tipo || contract.tipo
-        contract.status = update.status || contract.status,
-            contract.pagamento = update.pagamento || contract.pagamento
+        contract.status = update.status || contract.status
+        contract.pagamento = update.pagamento || contract.pagamento
+        contract.extra = update.extra || contract.extra
+
 
 
         if (update.products && update.products.length > 0) {
@@ -111,10 +116,13 @@ class ContractsService {
 
         const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
 
+
+
         const descont = total - (total * 0.05)
 
         contract.total = contract.pagamento == 1 ? descont : total;
 
+        contract.total += Number(contract.extra)
         try {
             await this.contractRepository.save(contract);
             return contract;
