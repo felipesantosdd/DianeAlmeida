@@ -9,6 +9,10 @@ export class Product {
     @Column({ type: 'varchar' })
     name: string;
 
+    @Column({ type: 'varchar', default: 'https://www.prontaprafesta.com/wp-content/uploads/2018/04/vestido-estilo-princesa-ombro.jpg' })
+    image: string;
+
+
     @Column({ type: 'varchar' })
     description: string;
 

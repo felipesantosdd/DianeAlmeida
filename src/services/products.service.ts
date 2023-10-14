@@ -3,6 +3,11 @@ import { AppDataSource } from "../data-source";
 import { Product } from "../entities/products";
 import { AppError } from "../error/error";
 import { IProductRequest, IProductResponse } from "../interfaces/products.interfaces";
+import { Request, Response } from "express";
+import S3Storage from "../utils/S3Storage";
+
+
+
 
 class ProductsServices {
 
@@ -91,14 +96,57 @@ class ProductsServices {
     }
 
     static async deleteUnique(id: string): Promise<void> {
-
-
-
         await this.ProductRepository.delete(id)
 
         return
     }
 
+    static async uploadImage(req: Request, res: Response) {
+        try {
+
+            const product = await this.ProductRepository.findOne({ where: { id: req.params.id } })
+
+            console.log(product)
+
+            if (!req.file) {
+                return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+            }
+
+            const s3Storage = new S3Storage()
+
+            await s3Storage.saveFile(req.file.filename)
+
+            product.image = req.file?.filename
+
+            await this.ProductRepository.save(product)
+
+            res.status(200).json(product);
+        } catch (error) {
+            console.error('Erro ao fazer upload da imagem:', error);
+            res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
+        }
+    }
+
+    static async getImage(name: string) {
+        try {
+            const s3Storage = new S3Storage();
+            const fileBuffer = await s3Storage.getFile(name);
+
+            // Se o arquivo não for encontrado, a função getFile já lançará um erro
+            // Portanto, aqui podemos assumir que o arquivo foi encontrado com sucesso
+
+            // Converter o buffer em um Blob
+            const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
+
+            // Criar uma URL para o Blob
+            const imageUrl = URL.createObjectURL(blob);
+
+            return imageUrl;
+        } catch (error) {
+            console.log(error);
+            return null; // Retorna null em caso de erro
+        }
+    }
 }
 
 export default ProductsServices;

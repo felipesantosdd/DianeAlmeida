@@ -20,6 +20,7 @@ const ProductResponseSchema = z.object({
     price: z.number(),
     totalValue: z.number(),
     contracts: z.array(z.string()),
+    image: z.string()
 });
 
 
