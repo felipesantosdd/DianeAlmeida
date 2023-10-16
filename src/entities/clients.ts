@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Contract } from "./contracts";
 import { Address } from "./address";
