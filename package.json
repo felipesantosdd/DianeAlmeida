@@ -10,7 +10,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsup src",
     "test": "vitest",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
