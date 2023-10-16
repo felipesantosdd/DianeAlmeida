@@ -2,13 +2,13 @@
   "name": "back",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "/opt/render/project/dist/index.js",
   "engines": {
     "node": ">=16.0.0"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsup src",
+    "build": "sucrase src/ -d ./dist --transforms typescript,imports",
     "test": "vitest",
     "typeorm": "typeorm-ts-node-commonjs",
     "start": "node app.js"
