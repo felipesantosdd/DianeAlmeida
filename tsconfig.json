@@ -2,9 +2,9 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "strict": false,
-    "target": "es6",
+    "target": "ES6", // Use "ES6" com letras maiúsculas
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "commonjs", // Use "commonjs" com letras minúsculas
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "./dist",
@@ -12,9 +12,15 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "lib": [
-      "es5",
-      "es6",
-      "dom"
-    ],
-  }
+      "ES5", // Use "ES5" com letras maiúsculas
+      "ES6", // Use "ES6" com letras maiúsculas
+      "DOM" // Use "DOM" com letras maiúsculas
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ], // Adicione a configuração "include" para seus arquivos TypeScript
+  "exclude": [
+    "node_modules"
+  ]
 }
