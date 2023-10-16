@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class MigrationName1697305249800 implements MigrationInterface {
-    name = 'MigrationName1697305249800'
+export class MigrationName1697491994273 implements MigrationInterface {
+    name = 'MigrationName1697491994273'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "product" ADD "image" character varying NOT NULL DEFAULT 'https://www.prontaprafesta.com/wp-content/uploads/2018/04/vestido-estilo-princesa-ombro.jpg'`);
