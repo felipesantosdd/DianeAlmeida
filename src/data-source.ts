@@ -19,6 +19,10 @@ const dataSourceConfig = (): ConnectionOptions => { // Correção aqui
         logging: true,
         entities: [entitiesPath], // Correção aqui
         migrations: [migrationPath],
+        synchronize: true,
+        ssl: {
+            rejectUnauthorized: false,
+        },
     };
 };
 
