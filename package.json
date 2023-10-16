@@ -11,7 +11,7 @@
     "build": "sucrase src/ -d ./dist --transforms typescript,imports",
     "test": "vitest",
     "typeorm": "typeorm-ts-node-commonjs",
-    "start": "node app.js"
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
