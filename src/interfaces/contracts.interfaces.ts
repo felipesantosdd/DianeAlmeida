@@ -7,6 +7,7 @@ export const contractCreateSchema = z.object({
     observacao: z.string().nullable(),
     tipo: z.string().nullable(),
     fechado: z.string(),
+    extra: z.number(),
     status: z.string(),
     pagamento: z.number(),
     client: z.object({
