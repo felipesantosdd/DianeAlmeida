@@ -1,20 +1,22 @@
-import AWS from "aws-sdk";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import path from "path";
 import mime from "mime";
-import multerConfig from '../config/multer'
+import multerConfig from '../config/multer';
 import { AppError } from "../error/error";
-import fs from "fs";
-import "dotenv/config";
+import fs from "fs/promises";
+import { Readable } from 'stream';
 
 class S3Storage {
-    private client: AWS.S3
+    private client: S3Client;
 
     constructor() {
-        this.client = new AWS.S3({
-            accessKeyId: process.env.AWS_ACECESS_KEY,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        this.client = new S3Client({
             region: 'us-east-2',
-        })
+            credentials: {
+                accessKeyId: process.env.AWS_ACCESS_KEY,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            },
+        });
     }
 
     async saveFile(fileName: string): Promise<void> {
@@ -26,33 +28,36 @@ class S3Storage {
             throw new AppError('Tipo de conteúdo não encontrado para o arquivo', 404);
         }
 
-        const fileContent = await fs.promises.readFile(originalPath);
+        const fileContent = await fs.readFile(originalPath);
 
-        await this.client.putObject({
-            Bucket: `dianealmeida-modelos`,
+        await this.client.send(new PutObjectCommand({
+            Bucket: 'dianealmeida-modelos',
             Key: fileName,
             Body: fileContent,
             ContentType: contentType,
-            ACL: 'public-read'
-        }).promise();
+            ACL: 'public-read',
+        }));
 
-        await fs.promises.unlink(originalPath);
+        await fs.unlink(originalPath);
     }
 
     async getFile(fileName: string): Promise<Buffer> {
-        const response = await this.client.getObject({
+        const response = await this.client.send(new GetObjectCommand({
             Bucket: 'dianealmeida-modelos',
             Key: fileName,
-        }).promise();
+        }));
 
-
-        if (response.Body) {
-            return response.Body as Buffer;
+        if (response.Body instanceof Readable) {
+            // Stream the content and convert it to a buffer
+            const chunks: Uint8Array[] = [];
+            for await (const chunk of response.Body) {
+                chunks.push(chunk);
+            }
+            return Buffer.concat(chunks);
         } else {
             throw new AppError('Arquivo não encontrado no S3', 404);
         }
     }
 }
-
 
 export default S3Storage;
