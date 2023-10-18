@@ -22,7 +22,7 @@ class S3Storage {
     }
 
     async saveFile(fileName: string): Promise<void> {
-        const originalPath = path.resolve(`tmp/${fileName}`);
+        const originalPath = path.resolve(`dist/tmp/${fileName}`);
 
         const contentType = mime.getType(originalPath);
 
