@@ -116,7 +116,7 @@ class ProductsServices {
 
             await s3Storage.saveFile(req.file.filename)
 
-            product.image = req.file?.filename
+            product.image = `https://dianealmeida-modelos.s3.us-east-2.amazonaws.com/${req.file?.filename}`
 
             await this.ProductRepository.save(product)
 
