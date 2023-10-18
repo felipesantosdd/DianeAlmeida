@@ -5,6 +5,8 @@ import multerConfig from '../config/multer';
 import { AppError } from "../error/error";
 import fs from "fs/promises";
 import { Readable } from 'stream';
+import "dotenv/config";
+import "reflect-metadata";
 
 class S3Storage {
     private client: S3Client;
@@ -20,7 +22,7 @@ class S3Storage {
     }
 
     async saveFile(fileName: string): Promise<void> {
-        const originalPath = path.resolve(`src/tmp/${fileName}`);
+        const originalPath = path.resolve(`tmp/${fileName}`);
 
         const contentType = mime.getType(originalPath);
 
