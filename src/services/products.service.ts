@@ -47,8 +47,6 @@ class ProductsServices {
 
     static async updatePopularity(productID: string): Promise<void> {
 
-        console.log(`productID: ${productID}`)
-
         const product = await this.ProductRepository.findOne({
             where: { id: productID }, relations: ['contracts']
         })
@@ -64,9 +62,6 @@ class ProductsServices {
         const product = await this.ProductRepository.findOne({
             where: { id: productID }
         })
-
-        console.log(update)
-
         if (!product) {
             throw new AppError('Produto Não Encontrado', 404)
         }

@@ -82,58 +82,59 @@ class ContractsService {
 
     static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
         const contract = await this.contractRepository.findOne({
-            where: { id }, relations: ['client', 'products'],
+            where: { id },
+            relations: ['client', 'products'],
         });
 
         if (!contract) {
             throw new AppError('Este contrato não existe', 404);
         }
 
-        contract.retirada = update.retirada != "" ? new Date(update.retirada) : contract.retirada
-        contract.devolucao = update.devolucao != "" ? new Date(update.devolucao) : contract.devolucao
-        contract.observacao = update.observacao || contract.observacao
-        contract.tipo = update.tipo || contract.tipo
-        contract.status = update.status || contract.status
-        contract.pagamento = update.pagamento || contract.pagamento
-        contract.extra = update.extra || contract.extra
+        // Atualize apenas os campos que são fornecidos na atualização
+        if (update.retirada) {
+            contract.retirada = new Date(update.retirada);
+        }
 
+        if (update.devolucao) {
+            contract.devolucao = new Date(update.devolucao);
+        }
 
+        contract.observacao = update.observacao || contract.observacao;
+        contract.tipo = update.tipo || contract.tipo;
+        contract.status = update.status || contract.status;
+        contract.pagamento = update.pagamento || contract.pagamento;
 
+        // Atualize o campo 'extra' apenas se ele for fornecido na atualização
+        if (typeof update.extra !== 'undefined') {
+            contract.extra = update.extra;
+        }
+
+        // Verifique se há produtos a serem adicionados ou removidos
         if (update.products && update.products.length > 0) {
-            // Obter os produtos existentes do contrato
+            // Obtenha os produtos existentes do contrato
             const existingProducts = contract.products || [];
 
-            existingProducts.map(product => ProductsServices.updatePopularity(product.id))
-
-            // Obter os detalhes dos produtos novos com base nos IDs fornecidos
+            // Obtenha os detalhes dos produtos novos com base nos IDs fornecidos
             const newProducts = await this.ProductRepository.findByIds(update.products);
 
-            // Atualizar a lista de produtos do contrato combinando os produtos existentes e novos
+            // Atualize a lista de produtos do contrato combinando produtos existentes e novos
             contract.products = [...existingProducts, ...newProducts];
 
-            // Calcular o valor total com base nos preços dos produtos atualizados
-
+            // Execute a atualização de popularidade após a atualização do contrato
+            for (const product of existingProducts) {
+                ProductsServices.updatePopularity(product.id);
+            }
         }
 
-        const Newtotal = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+        // Agora, calcule o valor total do contrato ou realize outras operações necessárias.
 
-        const total = Newtotal + Number(contract.extra)
+        // Salve as alterações no contrato
+        await this.contractRepository.save(contract);
 
-
-        const descont = total - (total * 0.05)
-
-        contract.total = contract.pagamento == 1 ? descont : total;
-
-        try {
-            await this.contractRepository.save(contract);
-            return contract;
-        } catch (error) {
-            throw new AppError(error.message, 500);
-        }
-
-
-
+        // Retorna o contrato atualizado ou outra resposta apropriada
+        return contract;
     }
+
 
     static async deleteProduct(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
         const contract = await this.contractRepository.findOne({
