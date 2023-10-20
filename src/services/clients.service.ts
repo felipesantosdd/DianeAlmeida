@@ -73,7 +73,6 @@ class ClientsServices {
 
     static async deleteUnique(id: string): Promise<void> {
         const client = await this.findUnique(id);
-        console.log(id)
         if (!client) {
             throw new AppError('Cliente não encontrado', 404);
         }

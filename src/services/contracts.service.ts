@@ -35,12 +35,17 @@ class ContractsService {
     static async create(contract: IContractRequest): Promise<IContractResponse | any> {
         const contractNumber = contract.number;
 
+
         const existContract = await this.contractRepository.findOne({
             where: { number: contractNumber },
         });
 
         if (existContract) {
             throw new AppError('Um contrato com esse número já existe!', 409);
+        }
+
+        if (!contract.extra) {
+            contract.extra = 0
         }
 
         const newContract = this.contractRepository.create(contract);
@@ -76,10 +81,6 @@ class ContractsService {
     }
 
     static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
-
-        console.log(update)
-
-
         const contract = await this.contractRepository.findOne({
             where: { id }, relations: ['client', 'products'],
         });
@@ -143,8 +144,6 @@ class ContractsService {
         if (!contract) {
             throw new AppError('Este contrato não existe', 404);
         }
-
-        console.log('o produto a ser removido', update.products)
 
         // Verifica se existe um produto a ser removido
         if (update.products && update.products.length > 0) {
