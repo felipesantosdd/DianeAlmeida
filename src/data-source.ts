@@ -16,7 +16,7 @@ const dataSourceConfig = (): ConnectionOptions => { // Correção aqui
     return {
         type: "postgres",
         url: dbUrl,
-        logging: true,
+        logging: ["error", "warn"],
         entities: [entitiesPath], // Correção aqui
         migrations: [migrationPath],
     };

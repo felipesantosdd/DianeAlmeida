@@ -81,9 +81,6 @@ class ContractsService {
     }
 
     static async updateUnique(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
-
-        console.log(update)
-
         try {
             const contract = await this.contractRepository.findOne({
                 where: { id },
@@ -108,33 +105,45 @@ class ContractsService {
             contract.status = update.status || contract.status;
             contract.pagamento = update.pagamento || contract.pagamento;
 
-            // Atualize o campo 'extra' apenas se ele for fornecido na atualização
-            if (typeof update.extra !== 'undefined') {
-                contract.extra = Number(update.extra);
-            }
-
             // Verifique se há produtos a serem adicionados ou removidos
             if (update.products && update.products.length > 0) {
                 // Obtenha os produtos existentes do contrato
                 const existingProducts = contract.products || [];
 
+                console.log('Produtos existentes:', existingProducts);
+
                 // Obtenha os detalhes dos produtos novos com base nos IDs fornecidos
-                const newProducts = await this.ProductRepository.findOne({ where: { id: update.products[0].id } });
+                const newProductIDs = update.products.map(product => product.id);
+                const newProducts = await this.ProductRepository.findByIds(newProductIDs);
+
+                // Filtre os produtos existentes para remover duplicatas
+                const filteredExistingProducts = existingProducts.filter(existingProduct => !newProductIDs.includes(existingProduct.id));
 
                 // Atualize a lista de produtos do contrato combinando produtos existentes e novos
-                contract.products = [...existingProducts, newProducts];
+                contract.products = [...filteredExistingProducts, ...newProducts];
 
                 // Execute a atualização de popularidade após a atualização do contrato
-                for (const product of existingProducts) {
-                    ProductsServices.updatePopularity(product.id);
+                for (const newProduct of newProducts) {
+                    ProductsServices.updatePopularity(newProduct.id);
                 }
             }
 
             // Agora, calcule o valor total do contrato ou realize outras operações necessárias.
+            contract.total = contract.products.reduce((acc, product) => {
+                return acc += Number(product.price);
+            }, 0);
 
-            contract.total = Number(contract.products.reduce((acc, product) => {
-                return acc + product.price
-            }, 0)) + Number(update.extra)
+            // Atualize o campo 'extra' apenas se ele for fornecido na atualização
+            if (typeof update.extra !== 'undefined') {
+                contract.extra = Number(update.extra);
+                contract.total += Number(update.extra);
+            } else {
+                contract.total += Number(contract.extra)
+            }
+
+            if (Number(contract.pagamento) === 1) {
+                contract.total = contract.total - (contract.total * 0.05)
+            }
 
             // Salve as alterações no contrato
             await this.contractRepository.save(contract);
@@ -142,10 +151,11 @@ class ContractsService {
             // Retorna o contrato atualizado ou outra resposta apropriada
             return contract;
         } catch (error) {
-            console.log(error)
-            return error
+            console.log(error);
+            return error;
         }
     }
+
 
 
     static async deleteProduct(id: string, update: IContractUpdate): Promise<IContractResponse | any> {
@@ -166,7 +176,8 @@ class ContractsService {
             contract.products = contract.products.filter(product => product.id !== removedProductId);
 
             // Recalcula o valor total do contrato com base nos produtos restantes
-            const total = contract.products.reduce((acc, product) => acc + Number(product.price), 0);
+            const total = Number(contract.products.reduce((acc, product) => acc + Number(product.price), 0)) + Number(contract.extra);
+
             const desconto = total - (total * 0.05);
             contract.total = contract.pagamento <= 2 ? desconto : total;
         }
