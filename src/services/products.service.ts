@@ -46,17 +46,29 @@ class ProductsServices {
     }
 
     static async updatePopularity(productID: string): Promise<void> {
+        try {
+            // Busca o produto no banco de dados
+            const product = await this.ProductRepository.findOne({
+                where: { id: productID },
+                relations: ['contracts'],
+            });
 
-        const product = await this.ProductRepository.findOne({
-            where: { id: productID }, relations: ['contracts']
-        })
+            if (!product) {
+                throw new Error(`Produto com ID ${productID} não encontrado.`);
+            }
 
-        product.popularity = product.contracts.length
+            // Atualiza a popularidade
+            product.popularity = product.contracts.length;
 
-        this.ProductRepository.save(product)
-
-        return
+            // Salva as alterações no banco de dados
+            await this.ProductRepository.save(product);
+        } catch (error) {
+            // Lida com erros ou propaga exceções, dependendo do contexto
+            console.error("Erro ao atualizar a popularidade do produto:", error);
+            throw error; // Propaga a exceção para o chamador da função
+        }
     }
+
 
     static async updateUnique(productID: string, update: IProductRequest): Promise<IProductResponse | any> {
         const product = await this.ProductRepository.findOne({
