@@ -18,8 +18,6 @@ class ProductsServices {
             order: { createdAt: 'ASC' }
         })
 
-        products.map(product => this.updatePopularity(product.id))
-
         const response = await this.ProductRepository.find({ order: { code: 'DESC' } })
 
         return response
@@ -46,6 +44,7 @@ class ProductsServices {
     }
 
     static async updatePopularity(productID: string): Promise<void> {
+
         try {
             // Busca o produto no banco de dados
             const product = await this.ProductRepository.findOne({
@@ -67,6 +66,7 @@ class ProductsServices {
             console.error("Erro ao atualizar a popularidade do produto:", error);
             throw error; // Propaga a exceção para o chamador da função
         }
+
     }
 
 
@@ -112,8 +112,6 @@ class ProductsServices {
         try {
 
             const product = await this.ProductRepository.findOne({ where: { id: req.params.id } })
-
-            console.log(product)
 
             if (!req.file) {
                 return res.status(400).json({ error: 'Nenhuma imagem enviada' });
