@@ -14,11 +14,7 @@ class ProductsServices {
     static ProductRepository = AppDataSource.getRepository(Product)
 
     static async findAll(): Promise<IProductResponse[] | any> {
-        const products = await this.ProductRepository.find({
-            order: { createdAt: 'ASC' }
-        })
-
-        const response = await this.ProductRepository.find({ order: { code: 'DESC' } })
+        const response = await this.ProductRepository.find({ order: { code: 'DESC' }, relations: { contracts: true } })
 
         return response
 
