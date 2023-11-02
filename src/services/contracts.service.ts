@@ -159,6 +159,8 @@ class ContractsService {
         if (update.products && update.products.length > 0) {
             const removedProductId = update.products[0].id;
 
+            ProductsServices.updatePopularity(removedProductId)
+
             // Remove o produto correspondente da lista de produtos existentes do contrato
             contract.products = contract.products.filter(product => product.id !== removedProductId);
 
