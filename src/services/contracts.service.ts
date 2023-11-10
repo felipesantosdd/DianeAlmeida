@@ -121,7 +121,7 @@ class ContractsService {
             }
 
             // Calcula o valor total do contrato
-            contract.total = (contract.products || []).reduce((acc, product) => acc + Number(product.price), 0);
+            contract.total = (contract.products || []).reduce((acc, product) => acc + (product ? Number(product.price) : 0), 0);
 
             // Atualiza o campo 'extra' e o total se fornecido na atualização
             if (typeof update.extra !== 'undefined') {
