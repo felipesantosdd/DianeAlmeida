@@ -116,7 +116,9 @@ class ContractsService {
                 const uniqueProductIDs = new Set([...existingProductIDs, ...newProductIDs]);
 
                 // Atualiza os produtos do contrato com base nos IDs únicos
-                contract.products = Array.from(uniqueProductIDs).map(id => newProducts.find(product => product.id === id));
+                const prod = Array.from(uniqueProductIDs).map(id => newProducts.find(product => product.id === id));
+
+                prod.map(p => contract.products.push(p))
 
             }
 
