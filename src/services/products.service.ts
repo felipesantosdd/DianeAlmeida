@@ -78,6 +78,7 @@ class ProductsServices {
         product.description = update.description || product.description
         product.modelo = update.modelo || product.modelo
         product.totalValue = update.price * 3 || product.totalValue
+        product.color = update.color || product.color
 
         await this.ProductRepository.save(product)
 
